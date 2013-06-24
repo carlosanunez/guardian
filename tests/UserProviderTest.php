@@ -4,8 +4,18 @@ use Mockery as m;
 
 class UserProviderTest extends \PHPUnit_Framework_TestCase {
 
+	/**
+	 * Elphie\Guardian\Provider\UserProvider
+	 *
+	 * @var string
+	 */
 	private $userProvider = null;
 
+	/**
+	 * Elphie\Guardian\Model\User
+	 *
+	 * @var string
+	 */
 	private $userModel = null;
 
 	public function setUp()
@@ -102,6 +112,33 @@ class UserProviderTest extends \PHPUnit_Framework_TestCase {
 
 		$this->userProvider->shouldReceive('igniteModel')->once()->andReturn($query);
 		$this->userProvider->findByActivationCode($activationCode);
+	}
+
+	public function testFindAll()
+	{
+		$this->userProvider->shouldReceive('igniteModel')->once()->andReturn($user = $this->userModel);
+		$query = m::mock('StdClass');
+		$user->shouldReceive('newQuery')->once()->andReturn($query);
+		$query->shouldReceive('get')->once()->andReturn($collection = m::mock('StdClass'));
+		$collection->shouldReceive('all')->once()->andReturn(array($user = $this->userModel));
+
+		$this->assertEquals(array($user), $this->userProvider->findAll());
+	}
+
+	public function testCreateUser()
+	{
+		$attributes = array(
+			'email' => 'foo@bar.com',
+			'password' => 'foobar',
+			'first_name' => 'foo',
+			'last_name' => 'bar'
+		);
+
+		$this->userProvider->shouldReceive('igniteModel')->once()->andReturn($user = $this->userModel);
+		$user->shouldReceive('fill')->with($attributes)->once();
+		$user->shouldReceive('save')->once();
+
+		$this->assertEquals($user, $this->userProvider->create($attributes));
 	}
 
 }
