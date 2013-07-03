@@ -8,4 +8,9 @@ class UserGroup extends Model {
 
 	public $timestamps = false;
 
+	public function group()
+	{
+		return $this->belongsTo('Elphie\Guardian\Model\Group');
+	}
+
 }

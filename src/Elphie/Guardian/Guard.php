@@ -3,6 +3,7 @@
 use Illuminate\Auth\UserInterface;
 use Elphie\Guardian\Model\User;
 use Elphie\Guardian\Provider\UserProvider;
+use Elphie\Guardian\Provider\GroupProvider;
 use Elphie\Guardian\AccountNotActivatedException;
 use Elphie\Guardian\AccountSuspendedException;
 use Elphie\Guardian\UserNotFoundException;
@@ -36,10 +37,10 @@ class Guard extends \Illuminate\Auth\Guard {
 			if ($this->provider->validateCredentials($user, $credentials))
 			{
 				//deny login if account is not activated
-				if ( ! $user->isActivated) throw new AccountNotActivated('This account is not activated');
+				if ( ! $user->isActivated()) throw new AccountNotActivated('This account is not activated');
 
 				//deny login if account is suspended
-				if ($user->suspended) throw new AccountSuspended('This account is suspended');
+				if ($user->isSuspended()) throw new AccountSuspended('This account is suspended');
 
 				if ($login) $this->login($user, $remember);
 
@@ -71,6 +72,12 @@ class Guard extends \Illuminate\Auth\Guard {
 		parent::logout();
 	}
 
+	/**
+	 * [register description]
+	 * @param  array   $credentials [description]
+	 * @param  boolean $activate    [description]
+	 * @return [type]               [description]
+	 */
 	public function register(array $credentials, $activate = false)
 	{
 		$user = new User;
@@ -85,9 +92,55 @@ class Guard extends \Illuminate\Auth\Guard {
 		return $user;
 	}
 
+	/**
+	 * [groups description]
+	 * @return [type] [description]
+	 */
+	public function groups()
+	{
+		$groups = array();
+
+		foreach ($this->user()->groups as $group)
+		{
+			array_push($groups, $group->group->name);
+		}
+
+		return $groups;
+	}
+
+	/**
+	 * [inGroup description]
+	 * @param  [type] $group [description]
+	 * @return [type]        [description]
+	 */
+	public function inGroup($group)
+	{
+		$groups = $this->groups();
+
+		return in_array($group, $groups) ? true: false;
+	}
+
+	public function can()
+	{
+
+	}
+
+	/**
+	 * [getUserProvider description]
+	 * @return [type] [description]
+	 */
 	public function getUserProvider()
 	{
 		return new UserProvider;
+	}
+
+	/**
+	 * [getGroupProvider description]
+	 * @return [type] [description]
+	 */
+	public function getGroupProvider()
+	{
+		return new GroupProvider;
 	}
 
 }
