@@ -1,5 +1,14 @@
 <?php namespace Elphie\Guardian;
 
+/**
+ * User management package
+ * 
+ * @package  Elphie
+ * @subpackage Guardian
+ * @author  Ahmad Shah Hafizan Hamidin <[ahmadshahhafizan[at]gmail.com]>
+ * @version  0.1
+ */
+
 use Illuminate\Auth\UserInterface;
 use Elphie\Guardian\Model\User;
 use Elphie\Guardian\Provider\UserProvider;
@@ -120,9 +129,28 @@ class Guard extends \Illuminate\Auth\Guard {
 		return in_array($group, $groups) ? true: false;
 	}
 
-	public function can()
+	/**
+	 * [can description]
+	 * @return [type] [description]
+	 */
+	public function can($permission)
 	{
+		$permissions = $this->mergePermissions();
 
+		return (array_key_exists($permission, $permissions) and $permissions[$permission]) ? true : false;
+	}
+
+	/**
+	 * [cannot description]
+	 * @param  [type] $permission [description]
+	 * @return [type]             [description]
+	 */
+	public function cannot($permission)
+	{
+		$permissions = $this->mergePermissions();
+
+		if ( ! array_key_exists($permission, $permissions)) return true;
+		return (array_key_exists($permission, $permissions) and ! $permissions[$permission]) ? true : false;
 	}
 
 	/**
@@ -141,6 +169,26 @@ class Guard extends \Illuminate\Auth\Guard {
 	public function getGroupProvider()
 	{
 		return new GroupProvider;
+	}
+
+	/**
+	 * [mergePermissions description]
+	 * @return [type] [description]
+	 */
+	protected function mergePermissions()
+	{
+		$permissions = array();
+
+		foreach ($this->user()->groups as $group)
+		{
+			$perms = json_decode($group->group->permissions, true);
+			foreach ($perms as $key => $value)
+			{
+				$permissions[$key] = $value;
+			}
+		}
+
+		return $permissions;
 	}
 
 }

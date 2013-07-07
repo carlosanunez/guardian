@@ -1,5 +1,4 @@
-Elphie Guardian
-===============
+## Elphie Guardian
 
 [![Build Status](https://travis-ci.org/theelphie/guardian.png?branch=master)](https://travis-ci.org/theelphie/guardian)
 

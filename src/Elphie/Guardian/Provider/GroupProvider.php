@@ -5,8 +5,16 @@ use Elphie\Guardian\GroupAlreadyExistsException;
 
 class GroupProvider implements ProviderInterface {
 
+	/**
+	 * [$model description]
+	 * @var string
+	 */
 	protected $model = 'Elphie\Guardian\Model\Group';
 
+	/**
+	 * [__construct description]
+	 * @param [type] $model [description]
+	 */
 	public function __construct($model = null)
 	{
 		if (isset($model))
@@ -15,6 +23,11 @@ class GroupProvider implements ProviderInterface {
 		}
 	}
 
+	/**
+	 * [findById description]
+	 * @param  [type] $id [description]
+	 * @return [type]     [description]
+	 */
 	public function findById($id)
 	{
 		$model = $this->igniteModel();
@@ -27,6 +40,11 @@ class GroupProvider implements ProviderInterface {
 		return $group;
 	}
 
+	/**
+	 * [findByName description]
+	 * @param  [type] $group [description]
+	 * @return [type]        [description]
+	 */
 	public function findByName($group)
 	{
 		$model = $this->igniteModel();
@@ -39,6 +57,10 @@ class GroupProvider implements ProviderInterface {
 		return $group;
 	}
 
+	/**
+	 * [findAll description]
+	 * @return [type] [description]
+	 */
 	public function findAll()
 	{
 		$model = $this->igniteModel();
@@ -46,6 +68,11 @@ class GroupProvider implements ProviderInterface {
 		return $model->newQuery()->get()->all();
 	}
 
+	/**
+	 * [create description]
+	 * @param  array  $attributes [description]
+	 * @return [type]             [description]
+	 */
 	public function create(array $attributes)
 	{
 		$model = $this->igniteModel();
@@ -56,6 +83,11 @@ class GroupProvider implements ProviderInterface {
 		return $model;
 	}
 
+	/**
+	 * [getPermissions description]
+	 * @param  [type] $name [description]
+	 * @return [type]       [description]
+	 */
 	public function getPermissions($name)
 	{
 		$group = $this->findByName($name);
@@ -63,6 +95,22 @@ class GroupProvider implements ProviderInterface {
 		return $group->permissions != '' ? json_decode($group->permissions) : null;
 	}
 
+	/**
+	 * [getUsers description]
+	 * @param  [type] $name [description]
+	 * @return [type]       [description]
+	 */
+	public function getUsers($name)
+	{
+		$group = $this->findByName($name);
+		
+		return $group->users;
+	}
+
+	/**
+	 * [igniteModel description]
+	 * @return [type] [description]
+	 */
 	public function igniteModel()
 	{
 		$class = '\\'.ltrim($this->model, '\\');
