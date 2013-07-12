@@ -46,10 +46,10 @@ class Guard extends \Illuminate\Auth\Guard {
 			if ($this->provider->validateCredentials($user, $credentials))
 			{
 				//deny login if account is not activated
-				if ( ! $user->isActivated()) throw new AccountNotActivated('This account is not activated');
+				if ( ! $user->isActivated()) throw new AccountNotActivatedException('This account is not activated');
 
 				//deny login if account is suspended
-				if ($user->isSuspended()) throw new AccountSuspended('This account is suspended');
+				if ($user->isSuspended()) throw new AccountSuspendedException('This account is suspended');
 
 				if ($login) $this->login($user, $remember);
 
@@ -151,6 +151,32 @@ class Guard extends \Illuminate\Auth\Guard {
 
 		if ( ! array_key_exists($permission, $permissions)) return true;
 		return (array_key_exists($permission, $permissions) and ! $permissions[$permission]) ? true : false;
+	}
+
+	/**
+	 * [attachGroup description]
+	 * @param  [type] $group [description]
+	 * @return [type]        [description]
+	 */
+	public function attachGroup($name)
+	{
+		$groupProvider = $this->getGroupProvider();
+		$group = $groupProvider->findByName($name);
+
+		return $groupProvider->addUser($group->id, array($this->user()->id));
+	}
+
+	/**
+	 * [detachGroup description]
+	 * @param  [type] $group [description]
+	 * @return [type]        [description]
+	 */
+	public function detachGroup($name)
+	{
+		$groupProvider = $this->getGroupProvider();
+		$group = $groupProvider->findByName($name);
+
+		return $groupProvider->removeUser($group->id, $this->user()->id);
 	}
 
 	/**

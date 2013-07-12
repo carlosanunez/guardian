@@ -6,6 +6,8 @@ class UserGroup extends Model {
 
 	protected $table = 'user_groups';
 
+	protected $fillable = array('user_id', 'group_id');
+
 	public $timestamps = false;
 
 	public function group()

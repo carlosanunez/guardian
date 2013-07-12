@@ -1,5 +1,6 @@
 <?php namespace Elphie\Guardian\Provider;
 
+use Elphie\Guardian\Model\UserGroup;
 use Elphie\Guardian\GroupNotFoundException;
 use Elphie\Guardian\GroupAlreadyExistsException;
 
@@ -105,6 +106,37 @@ class GroupProvider implements ProviderInterface {
 		$group = $this->findByName($name);
 		
 		return $group->users;
+	}
+
+	/**
+	 * [$users description]
+	 * @var array
+	 */
+	public function addUser($group, array $users)
+	{
+		foreach ($users as $user)
+		{
+			UserGroup::create(array('user_id' => $user, 'group_id' => $group));
+		}
+
+		return true;
+	}
+
+	/**
+	 * [removeUser description]
+	 * @param  [type] $group [description]
+	 * @param  [type] $user  [description]
+	 * @return [type]        [description]
+	 */
+	public function removeUser($group, $user)
+	{
+		$userGroup = UserGroup::where('user_id', '=', $user)
+		->where('group_id', '=', $group)
+		->first();
+
+		$userGroup->delete();
+
+		return true;
 	}
 
 	/**
