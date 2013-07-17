@@ -57,7 +57,7 @@ class Guard extends \Illuminate\Auth\Guard {
 			}
 		}
 
-		throw new UserNotFound('User not found');
+		throw new UserNotFoundException('User not found');
 	}
 
 	/**
@@ -69,7 +69,7 @@ class Guard extends \Illuminate\Auth\Guard {
 	{
 		if (is_null($this->user()))
 		{
-			throw new UserNotLogin('Please log in to continue');
+			throw new UserNotLoginException('Please log in to continue');
 		}
 		else
 		{
