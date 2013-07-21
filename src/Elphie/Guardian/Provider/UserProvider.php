@@ -1,11 +1,30 @@
 <?php namespace Elphie\Guardian\Provider;
 
+/**
+ * Larvel 4 user management package. Extending the Auth module.
+ * 
+ * @package  Elphie
+ * @subpackage Guardian
+ * @author  Ahmad Shah Hafizan Hamidin <[ahmadshahhafizan[at]gmail.com]>
+ * @license  MIT
+ */
+
 use Elphie\Guardian\UserNotFoundException;
 
 class UserProvider implements ProviderInterface {
 
+	/**
+	 * User eloquent model
+	 * 
+	 * @var Elphie\Guardian\Model\User
+	 */
 	protected $model = 'Elphie\Guardian\Model\User';
 
+	/**
+	 * Construct
+	 * 
+	 * @return void
+	 */
 	public function __construct($model = null)
 	{
 		if (isset($model))
@@ -14,6 +33,12 @@ class UserProvider implements ProviderInterface {
 		}
 	}
 
+	/**
+	 * Find user by primary key
+	 * 
+	 * @param  integer $id
+	 * @return Elphie\Guardian\Model\User
+	 */
 	public function findById($id)
 	{
 		$model = $this->igniteModel();
@@ -26,6 +51,12 @@ class UserProvider implements ProviderInterface {
 		return $user;
 	}
 
+	/**
+	 * Find user by login attribute
+	 * 
+	 * @param  string $attribute
+	 * @return Elphie\Guardian\Model\User
+	 */
 	public function findByLogin($attribute)
 	{
 		$model = $this->igniteModel();
@@ -38,6 +69,12 @@ class UserProvider implements ProviderInterface {
 		return $user;
 	}
 
+	/**
+	 * Find user by activation code
+	 * 
+	 * @param  string $activationCode
+	 * @return Elphie\Guardian\Model\User
+	 */
 	public function findByActivationCode($activationCode)
 	{
 		$model = $this->igniteModel();
@@ -50,6 +87,11 @@ class UserProvider implements ProviderInterface {
 		return $user;
 	}
 
+	/**
+	 * Find all users
+	 * 
+	 * @return Elphie\Guardian\Model\User
+	 */
 	public function findAll()
 	{
 		$model = $this->igniteModel();
@@ -57,6 +99,12 @@ class UserProvider implements ProviderInterface {
 		return $model->newQuery()->get()->all();
 	}
 
+	/**
+	 * Create new user
+	 * 
+	 * @param array $attributes
+	 * @return Elphie\Guardian\Model\User
+	 */
 	public function create(array $attributes)
 	{
 		$model = $this->igniteModel();
@@ -67,6 +115,11 @@ class UserProvider implements ProviderInterface {
 		return $model;
 	}
 
+	/**
+	 * Instantiate user eloquent model
+	 * 
+	 * @return Elphie\Guardian\Model\User
+	 */
 	public function igniteModel()
 	{
 		$class = '\\'.ltrim($this->model, '\\');

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Larvel 4 user management package. Extending the Auth module.
+ * 
+ * @package  Elphie
+ * @subpackage Guardian
+ * @author  Ahmad Shah Hafizan Hamidin <[ahmadshahhafizan[at]gmail.com]>
+ * @license  MIT
+ */
+
 return array(
 
 	'user_table' => 'users',

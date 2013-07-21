@@ -1,5 +1,14 @@
 <?php namespace Elphie\Guardian\Model;
 
+/**
+ * Larvel 4 user management package. Extending the Auth module.
+ * 
+ * @package  Elphie
+ * @subpackage Guardian
+ * @author  Ahmad Shah Hafizan Hamidin <[ahmadshahhafizan[at]gmail.com]>
+ * @license  MIT
+ */
+
 use Illuminate\Database\Eloquent\Model;
 
 class UserMetadata extends Model {

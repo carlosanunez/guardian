@@ -1,12 +1,12 @@
 <?php namespace Elphie\Guardian;
 
 /**
- * User management package
+ * Larvel 4 user management package. Extending the Auth module.
  * 
  * @package  Elphie
  * @subpackage Guardian
  * @author  Ahmad Shah Hafizan Hamidin <[ahmadshahhafizan[at]gmail.com]>
- * @version  0.1
+ * @license  MIT
  */
 
 use Illuminate\Auth\UserInterface;
@@ -82,10 +82,11 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [register description]
-	 * @param  array   $credentials [description]
-	 * @param  boolean $activate    [description]
-	 * @return [type]               [description]
+	 * Register new user
+	 * 
+	 * @param  array   $credentials
+	 * @param  bool $activate
+	 * @return Elphie\Guardian\Model\User
 	 */
 	public function register(array $credentials, $activate = false)
 	{
@@ -102,8 +103,9 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [groups description]
-	 * @return [type] [description]
+	 * Get user groups
+	 * 
+	 * @return array
 	 */
 	public function groups()
 	{
@@ -118,9 +120,10 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [inGroup description]
-	 * @param  [type] $group [description]
-	 * @return [type]        [description]
+	 * Determine if user belong to the given group
+	 * 
+	 * @param  string $group
+	 * @return bool
 	 */
 	public function inGroup($group)
 	{
@@ -130,8 +133,10 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [can description]
-	 * @return [type] [description]
+	 * Determine if user has the permission
+	 *
+	 * @param  string $permission
+	 * @return bool
 	 */
 	public function can($permission)
 	{
@@ -141,9 +146,10 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [cannot description]
-	 * @param  [type] $permission [description]
-	 * @return [type]             [description]
+	 * Determine if the user does not has the permission
+	 * 
+	 * @param  string $permission
+	 * @return bool
 	 */
 	public function cannot($permission)
 	{
@@ -154,9 +160,10 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [attachGroup description]
-	 * @param  [type] $group [description]
-	 * @return [type]        [description]
+	 * Add user to a group
+	 * 
+	 * @param  string $group
+	 * @return bool
 	 */
 	public function attachGroup($name)
 	{
@@ -167,9 +174,10 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [detachGroup description]
-	 * @param  [type] $group [description]
-	 * @return [type]        [description]
+	 * Remove user from a group
+	 * 
+	 * @param  string $group
+	 * @return bool
 	 */
 	public function detachGroup($name)
 	{
@@ -180,8 +188,9 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [getUserProvider description]
-	 * @return [type] [description]
+	 * Get user provider
+	 * 
+	 * @return void
 	 */
 	public function getUserProvider()
 	{
@@ -189,8 +198,9 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [getGroupProvider description]
-	 * @return [type] [description]
+	 * Get group provider
+	 * 
+	 * @return void
 	 */
 	public function getGroupProvider()
 	{
@@ -198,8 +208,9 @@ class Guard extends \Illuminate\Auth\Guard {
 	}
 
 	/**
-	 * [mergePermissions description]
-	 * @return [type] [description]
+	 * Merge group permissions
+	 * 
+	 * @return array
 	 */
 	protected function mergePermissions()
 	{

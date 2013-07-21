@@ -1,5 +1,14 @@
 <?php namespace Elphie\Guardian\Provider;
 
+/**
+ * Larvel 4 user management package. Extending the Auth module.
+ * 
+ * @package  Elphie
+ * @subpackage Guardian
+ * @author  Ahmad Shah Hafizan Hamidin <[ahmadshahhafizan[at]gmail.com]>
+ * @license  MIT
+ */
+
 use Elphie\Guardian\Model\UserGroup;
 use Elphie\Guardian\GroupNotFoundException;
 use Elphie\Guardian\GroupAlreadyExistsException;
@@ -7,14 +16,16 @@ use Elphie\Guardian\GroupAlreadyExistsException;
 class GroupProvider implements ProviderInterface {
 
 	/**
-	 * [$model description]
-	 * @var string
+	 * Group eloquent model
+	 * 
+	 * @var Elphie\Guardian\Model\Group
 	 */
 	protected $model = 'Elphie\Guardian\Model\Group';
 
 	/**
-	 * [__construct description]
-	 * @param [type] $model [description]
+	 * Construct
+	 * 
+	 * @return void
 	 */
 	public function __construct($model = null)
 	{
@@ -25,9 +36,10 @@ class GroupProvider implements ProviderInterface {
 	}
 
 	/**
-	 * [findById description]
-	 * @param  [type] $id [description]
-	 * @return [type]     [description]
+	 * Find group by primary key
+	 * 
+	 * @param  integer $id
+	 * @return Elphie\Guardian\Model\Group
 	 */
 	public function findById($id)
 	{
@@ -42,9 +54,10 @@ class GroupProvider implements ProviderInterface {
 	}
 
 	/**
-	 * [findByName description]
-	 * @param  [type] $group [description]
-	 * @return [type]        [description]
+	 * Find group by name
+	 * 
+	 * @param  string $group
+	 * @return Elphie\Guardian\Model\Group
 	 */
 	public function findByName($group)
 	{
@@ -59,8 +72,9 @@ class GroupProvider implements ProviderInterface {
 	}
 
 	/**
-	 * [findAll description]
-	 * @return [type] [description]
+	 * Find all groups
+	 * 
+	 * @return Elphie\Guardian\Model\Group
 	 */
 	public function findAll()
 	{
@@ -70,9 +84,10 @@ class GroupProvider implements ProviderInterface {
 	}
 
 	/**
-	 * [create description]
-	 * @param  array  $attributes [description]
-	 * @return [type]             [description]
+	 * Create new group
+	 * 
+	 * @param  array  $attributes
+	 * @return Elphie\Guardian\Model\Group
 	 */
 	public function create(array $attributes)
 	{
@@ -85,9 +100,10 @@ class GroupProvider implements ProviderInterface {
 	}
 
 	/**
-	 * [getPermissions description]
-	 * @param  [type] $name [description]
-	 * @return [type]       [description]
+	 * Get group permissions
+	 * 
+	 * @param  string $name
+	 * @return array|null
 	 */
 	public function getPermissions($name)
 	{
@@ -97,9 +113,10 @@ class GroupProvider implements ProviderInterface {
 	}
 
 	/**
-	 * [getUsers description]
-	 * @param  [type] $name [description]
-	 * @return [type]       [description]
+	 * Get user from the group provided
+	 * 
+	 * @param  string $name
+	 * @return Elphie\Guardian\Model\UserGroup
 	 */
 	public function getUsers($name)
 	{
@@ -109,8 +126,11 @@ class GroupProvider implements ProviderInterface {
 	}
 
 	/**
-	 * [$users description]
+	 * Add users to a group
+	 *
+	 * @var integer $group
 	 * @var array
+	 * @return  bool
 	 */
 	public function addUser($group, array $users)
 	{
@@ -123,10 +143,11 @@ class GroupProvider implements ProviderInterface {
 	}
 
 	/**
-	 * [removeUser description]
-	 * @param  [type] $group [description]
-	 * @param  [type] $user  [description]
-	 * @return [type]        [description]
+	 * Remove user from a group
+	 * 
+	 * @param  integer $group
+	 * @param  integer $user
+	 * @return bool
 	 */
 	public function removeUser($group, $user)
 	{
@@ -140,8 +161,9 @@ class GroupProvider implements ProviderInterface {
 	}
 
 	/**
-	 * [igniteModel description]
-	 * @return [type] [description]
+	 * Instantiate group eloquent model
+	 * 
+	 * @return Elphie\Guardian\Model\Group
 	 */
 	public function igniteModel()
 	{

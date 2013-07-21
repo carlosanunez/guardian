@@ -1,5 +1,14 @@
 <?php namespace Elphie\Guardian\Model;
 
+/**
+ * Larvel 4 user management package. Extending the Auth module.
+ * 
+ * @package  Elphie
+ * @subpackage Guardian
+ * @author  Ahmad Shah Hafizan Hamidin <[ahmadshahhafizan[at]gmail.com]>
+ * @license  MIT
+ */
+
 use Illuminate\Database\Eloquent\Model;
 
 class UserGroup extends Model {
@@ -13,6 +22,11 @@ class UserGroup extends Model {
 	public function group()
 	{
 		return $this->belongsTo('Elphie\Guardian\Model\Group');
+	}
+
+	public function user()
+	{
+		return $this->belongsTo('Elphie\Guardian\Model\User');
 	}
 
 }
