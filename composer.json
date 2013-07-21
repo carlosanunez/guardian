@@ -1,6 +1,6 @@
 {
     "name": "elphie/guardian",
-    "description": "",
+    "description": "Laravel 4 user management package by extending the Auth module.",
     "authors": [
         {
             "name": "Ahmad Shah Hafizan Hamidin",

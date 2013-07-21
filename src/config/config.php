@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Larvel 4 user management package. Extending the Auth module.
+ * Laravel 4 user management package. Extending the Auth module.
  * 
  * @package  Elphie
  * @subpackage Guardian
