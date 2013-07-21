@@ -1,10 +1,12 @@
 {
     "name": "elphie/guardian",
     "description": "Laravel 4 user management package by extending the Auth module.",
+    "license": "MIT",
     "authors": [
         {
             "name": "Ahmad Shah Hafizan Hamidin",
-            "email": "ahmadshahahfizan@gmail.com"
+            "email": "ahmadshahahfizan@gmail.com",
+            "homepage": "https://github.com/theelphie"
         }
     ],
     "require": {
