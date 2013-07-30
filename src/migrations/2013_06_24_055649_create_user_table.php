@@ -11,10 +11,11 @@ class CreateUserTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('users', function($table)
+		Schema::create(Config::get('elphie/guardian::user_table'), function($table)
 		{
 			$table->increments('id');
 			$table->string('email', 150);
+			$table->string('nickname')->nullable();
 			$table->string('password', 60);
 			$table->string('first_name')->nullable();
 			$table->string('last_name')->nullable();
@@ -28,7 +29,7 @@ class CreateUserTable extends Migration {
 			$table->timestamps();
 		});
 
-		Schema::create('user_metadatas', function($table)
+		Schema::create(Config::get('elphie/guardian::metadata_table'), function($table)
 		{
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
@@ -37,6 +38,9 @@ class CreateUserTable extends Migration {
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
+
+		$user = Config::get('elphie/guardian::default.user');
+		Auth::register($user, true);
 	}
 
 	/**
@@ -46,8 +50,8 @@ class CreateUserTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('user_metadatas');
-		Schema::drop('users');
+		Schema::drop(Config::get('elphie/guardian::metadata_table'));
+		Schema::drop(Config::get('elphie/guardian::user_table'));
 	}
 
 }
