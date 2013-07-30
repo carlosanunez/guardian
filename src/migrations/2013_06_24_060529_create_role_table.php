@@ -11,27 +11,19 @@ class CreateRoleTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create(Config::get('elphie/guardian::group_table'), function($table)
+		Schema::create('groups', function($table)
 		{
 			$table->increments('id');
 			$table->string('name');
 			$table->text('permissions');
 		});
 
-		Schema::create(Config::get('elphie/guardian::user_group_table'), function($table)
+		Schema::create('user_groups', function($table)
 		{
 			$table->increments('id');
 			$table->integer('user_id');
 			$table->integer('group_id');
 		});
-
-		$group = Config::get('elphie/guardian::default.group');
-		$groupProvider = Auth::getGroupProvider();
-		$defaultgroup = $groupProvider->create($group);
-
-		$userProvider = Auth::getUserProvider();
-		$defaultUser = Auth::findByLogin(Config::get('elphie/guardian::default.user.email'));
-		$groupProvider->addUser($defaultgroup->id, array($defaultUser->id));
 	}
 
 	/**
@@ -41,8 +33,8 @@ class CreateRoleTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop(Config::get('elphie/guardian::group_table'));
-		Schema::drop(Config::get('elphie/guardian::user_group_table'));
+		Schema::drop('groups');
+		Schema::drop('user_groups');
 	}
 
 }

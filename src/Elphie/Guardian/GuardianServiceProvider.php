@@ -40,7 +40,7 @@ class GuardianServiceProvider extends ServiceProvider {
 		$this->registerAuth();
 	}
 
-	public function registerAuth()
+	protected function registerAuth()
 	{
 		$this->app['auth'] = $this->app->share(function($app)
 		{
@@ -51,16 +51,6 @@ class GuardianServiceProvider extends ServiceProvider {
 
 			return new AuthManager($app);
 		});
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array();
 	}
 
 }
