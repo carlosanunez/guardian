@@ -18,6 +18,7 @@ use Elphie\Guardian\AccountSuspendedException;
 use Elphie\Guardian\UserNotFoundException;
 use Elphie\Guardian\UserNotLoginException;
 use Carbon\Carbon;
+use \DateTime;
 
 class Guard extends \Illuminate\Auth\Guard {
 
@@ -74,7 +75,7 @@ class Guard extends \Illuminate\Auth\Guard {
 		else
 		{
 			//record last login
-			$this->user()->last_login = Carbon::now()->toDateTimeString();
+			$this->user()->last_login = new DateTime('NOW');
 			$this->user()->save();
 		}
 
