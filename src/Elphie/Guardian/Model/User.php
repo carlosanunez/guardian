@@ -58,7 +58,7 @@ class User extends Model implements UserInterface, RemindableInterface {
 	 * [$fillable description]
 	 * @var array
 	 */
-	protected $fillable = array('email', 'password', 'first_name', 'last_name', 'activated');
+	protected $fillable = array('email', 'password', 'nickname', 'first_name', 'last_name', 'activated');
 
 	public function metadata()
 	{
