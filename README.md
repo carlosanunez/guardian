@@ -23,4 +23,4 @@ Replace the Auth service provider in the `app/config/app.php` file
 Elphie\Guardian\GuardianServiceProvider,
 ```
 
-Run `php artisan migrate --package="elphie\guardian". This will create a new user table. You are encourage to install this with a new fresh copy of Laravel.
+Run `php artisan migrate --package="elphie\guardian"`. This will create a new user table. You are encourage to install this with a new fresh copy of Laravel.
