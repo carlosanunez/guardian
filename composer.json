@@ -1,0 +1,28 @@
+{
+    "name": "elphie/guardian",
+    "description": "",
+    "authors": [
+        {
+            "name": "Ahmad Shah Hafizan Bin Hamidin",
+            "email": "ahmadshahhafizan@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "0.8.0",
+        "illuminate/database": "4.0.x",
+        "illuminate/auth": "4.0.x"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/Elphie/Guardian/Exceptions.php"
+        ],
+        "psr-0": {
+            "Elphie\\Guardian": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
