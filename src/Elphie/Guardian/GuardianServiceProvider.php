@@ -1,7 +1,7 @@
 <?php namespace Elphie\Guardian;
 
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\AuthServiceProvider as ServiceProvider;
 
 class GuardianServiceProvider extends ServiceProvider {
 
@@ -34,6 +34,7 @@ class GuardianServiceProvider extends ServiceProvider {
 	{
 		$this->registerRepositories();
 		$this->registerFacades();
+		$this->registerAuth();
 	}
 
 	protected function registerRepositories()
@@ -52,14 +53,17 @@ class GuardianServiceProvider extends ServiceProvider {
 		});
 	}
 
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
+	protected function registerAuth()
 	{
-		return array('elphie.guardian.user');
+		$this->app['auth'] = $this->app->share(function($app)
+		{
+			// Once the authentication service has actually been requested by the developer
+			// we will set a variable in the application indicating such. This helps us
+			// know that we need to set any queued cookies in the after event later.
+			$app['auth.loaded'] = true;
+
+			return new AuthManager($app);
+		});
 	}
 
 }
