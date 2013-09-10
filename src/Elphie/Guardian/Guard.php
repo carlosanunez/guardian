@@ -1,7 +1,6 @@
 <?php namespace Elphie\Guardian;
 
 use Carbon\Carbon;
-use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Auth\UserInterface;
 use Elphie\Guardian\UserNotLoginException;
 use Illuminate\Auth\UserProviderInterface;
@@ -9,14 +8,23 @@ use Elphie\Guardian\UserNotFoundException;
 use Illuminate\Session\Store as SessionStore;
 use Elphie\Guardian\AccountSuspendedException;
 use Elphie\Guardian\AccountIsActivatedException;
-use Elphie\Guardian\AccountNotActivatedException;
 use Elphie\Guardian\InvalidActivationCodeException;
+use Elphie\Guardian\AccountNotActivatedException;
+use Illuminate\Config\Repository as ConfigRepository;
 use Elphie\Guardian\Contracts\UserRepositoryInterface;
 
 class Guard extends \Illuminate\Auth\Guard {
 
+    /**
+     * [$userRepo description]
+     * @var [type]
+     */
     protected $userRepo;
 
+    /**
+     * [$config description]
+     * @var [type]
+     */
     protected $config;
 
     /**
@@ -27,7 +35,11 @@ class Guard extends \Illuminate\Auth\Guard {
      * @param  Elphie\Guardian\Contracts\UserRepositoryInterface  $user
      * @return void
      */
-    public function __construct(UserProviderInterface $provider, SessionStore $session, ConfigRepository $config, UserRepositoryInterface $user)
+    public function __construct(
+        UserProviderInterface $provider,
+        SessionStore $session,
+        ConfigRepository $config,
+        UserRepositoryInterface $user)
     {
         $this->session = $session;
         $this->provider = $provider;
@@ -74,6 +86,10 @@ class Guard extends \Illuminate\Auth\Guard {
         throw new UserNotFoundException('User not found');
     }
 
+    /**
+     * [logout description]
+     * @return [type] [description]
+     */
     public function logout()
     {
         if (is_null($this->user())) throw new UserNotLoginException('Please log in to continue');
@@ -84,15 +100,38 @@ class Guard extends \Illuminate\Auth\Guard {
         parent::logout();
     }
 
-    public function register()
+    /**
+     * [register description]
+     * @return [type] [description]
+     */
+    public function register(array $args = array(), $activated = false)
     {
-        $this->events->fire('elphie.guardian.register');
+        $user = $this->userRepo->create($args);
+        //Set account activation code
+        $updateArgs = array();
+        $updateArgs['activation_code'] = $user->generateRandomCode();
+        //Automatically update user if specified
+        if ($activated) $updateArgs['activated'] = 1;
+        //Update user data
+        $user = $this->userRepo->update($user->id, $updateArgs);
+
+        if (isset($this->events))
+        {
+            $this->events->fire('elphie.guardian.register', array($user));
+        }
+
+        return $user->getActivationCode();
     }
 
+    /**
+     * [activateAccount description]
+     * @param  [type] $activationCode [description]
+     * @return [type]                 [description]
+     */
     public function activateAccount($activationCode)
     {
         //Throw an exception if user already activated
-        if ($this->user()->activated) throw new AccountIsActivatedException('Account already activated');
+        if ($this->user()->isActivated()) throw new AccountIsActivatedException('Account already activated');
         //Throw an exception if user provide invalid activation code
         if ($activationCode != $this->user()->getActivationCode()) throw new InvalidActivationCodeException("Invalid activation code [$activationCode]");
 
@@ -100,21 +139,36 @@ class Guard extends \Illuminate\Auth\Guard {
         $this->user()->save();
 
         //Fire elphie guardian account activation event
-        $this->events->fire('elphie.guardian.activation');
+        if (isset($this->events))
+        {
+            $this->events->fire('elphie.guardian.activateaccount', array($this->user()));
+        }
 
         return true;
     }
 
+    /**
+     * [resetPassword description]
+     * @return [type] [description]
+     */
     public function resetPassword()
     {
         $this->events->fire('elphie.guardian.resetpassword');
     }
 
+    /**
+     * [getConfig description]
+     * @return [type] [description]
+     */
     public function getConfig()
     {
         return $this->config;
     }
 
+    /**
+     * [getUserRepository description]
+     * @return [type] [description]
+     */
     public function getUserRepository()
     {
         return $this->userRepo;

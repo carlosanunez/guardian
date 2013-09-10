@@ -152,6 +152,8 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
         $attribute = 'nickname';
         $value = 'foobar';
 
+        $repo = $this->getInstance();
+
         $this->query->shouldReceive('newQuery')->once()->andReturn($this->query);
         $this->query->shouldReceive('where')->with($attribute, $value)->once()->andReturn($this->query);
         $this->query->shouldReceive('first')->andReturn($model = $this->model);
@@ -162,10 +164,12 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException Elphie\Guardian\UserNotFoundException
      */
-    public function findByAttributeMethodThrowUserNotFoundException()
+    public function testfindByAttributeMethodThrowUserNotFoundException()
     {
         $attribute = 'nickname';
         $value = 'foobar';
+
+        $repo = $this->getInstance();
 
         $this->query->shouldReceive('newQuery')->once()->andReturn($this->query);
         $this->query->shouldReceive('where')->with($attribute, $value)->once()->andReturn($this->query);
@@ -174,10 +178,111 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
         $repo->findByAttribute($attribute, $value);
     }
 
+    public function testCreateMethod()
+    {
+        $args = array('email' => 'foo@bar.com', 'password' => '123456', 'nickname' => 'foobar', 'first_name' => 'foo', 'last_name' => 'bar');
+        $repo = $this->getInstance();
+
+        $this->query->shouldReceive('newQuery')->twice()->andReturn($this->query);
+        $this->query->shouldReceive('where')->with('email', $args['email'])->andReturn($this->query);
+        $this->query->shouldReceive('first')->andReturn(null);
+        $this->query->shouldReceive('create')->with($args)->andReturn($model = $this->model);
+
+        $this->assertEquals($model, $repo->create($args));
+    }
+
+    /**
+     * @expectedException Elphie\Guardian\EmailCannotBeEmptyException
+     */
+    public function testCreateMethodThrowEmailCannotBeEmptyException()
+    {
+        $args = array('');
+        $repo = $this->getInstance();
+
+        $repo->create($args);
+    }
+
+    /**
+     * @expectedException Elphie\Guardian\EmailAlreadyExistsException
+     */
+    public function testCreateMethodThrowEmailAlreadyExistsException()
+    {
+        $args = array('email' => 'foo@bar.com');
+        $repo = $this->getInstance();
+
+        $this->query->shouldReceive('newQuery')->once()->andReturn($this->query);
+        $this->query->shouldReceive('where')->with('email', $args['email'])->once()->andReturn($this->query);
+        $this->query->shouldReceive('first')->andReturn($model = $this->model);
+
+        $repo->create($args);
+    }
+
+    public function testUpdateMethod()
+    {
+        $args = array('email' => 'foo@bar.com');
+        $repo = $this->getInstance();
+
+        $this->query->shouldReceive('newQuery')->zeroOrMoreTimes()->andReturn($this->query);
+        $this->query->shouldReceive('find')->with(1)->zeroOrMoreTimes()->andReturn($user = $this->getUserStub());
+
+        $this->assertNotEquals($args['email'], $user->email);
+
+        $this->query->shouldReceive('where')->with('email', $args['email'])->once()->andReturn($this->query);
+        $this->query->shouldReceive('first')->once()->andReturn(null);
+
+        $user->shouldReceive('fill')->with($args)->once()->andReturn($user);
+        $user->shouldReceive('save')->once()->andReturn($user);
+
+        $this->assertEquals($user, $repo->update(1, $args));
+    }
+
+    /**
+     * @expectedException Elphie\Guardian\EmailCannotBeEmptyException
+     */
+    public function testUpdateMethodThrowEmailCannotBeEmptyException()
+    {
+        $args = array();
+        $repo = $this->getInstance();
+
+        $repo->update(1, $args);
+    }
+
+    /**
+     * @expectedException Elphie\Guardian\EmailAlreadyExistsException
+     */
+    public function testUpdateMethodThrowEmailAlreadyExistsException()
+    {
+        $args = array('email' => 'foo@bar.com');
+        $repo = $this->getInstance();
+
+        $this->query->shouldReceive('newQuery')->twice()->andReturn($this->query);
+        $this->query->shouldReceive('find')->with(1)->once()->andReturn($user = $this->getUserStub());
+
+        $this->assertNotEquals($args['email'], $user->email);
+
+        $this->query->shouldReceive('where')->with('email', $args['email'])->once()->andReturn($this->query);
+        $this->query->shouldReceive('first')->once()->andReturn($model = $this->model);
+
+        $repo->update(1, $args);
+    }
+
     protected function getInstance()
     {
         $this->app['config']->shouldReceive('get')->with('elphie/guardian::models.user', 'Elphie\Guardian\Models\User')->andReturn($this->query);
         return new UserRepository($this->app);
+    }
+
+    protected function getUserStub()
+    {
+        $user = m::mock('stdClass');
+        $user->id = 1;
+        $user->email = 'foobar@bar.com';
+        $user->nickname = 'foobar';
+        $user->password = '123456';
+        $user->first_name = 'Foo';
+        $user->last_name = 'Bar';
+
+        return $user;
     }
 
 }

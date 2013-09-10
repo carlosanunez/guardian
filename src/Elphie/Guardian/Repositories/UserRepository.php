@@ -1,6 +1,9 @@
 <?php namespace Elphie\Guardian\Repositories;
 
 use Elphie\Guardian\UserNotFoundException;
+use Elphie\Guardian\EmailAlreadyExistsException;
+use Elphie\Guardian\EmailCannotBeEmptyException;
+use Elphie\Guardian\NicknameAlreadyExistsException;
 use Elphie\Guardian\Contracts\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface {
@@ -66,12 +69,23 @@ class UserRepository implements UserRepositoryInterface {
 
     public function create(array $args = array())
     {
+        $this->isValidForCreate(array_get($args, 'email', null), array_get($args, 'nickname', null));
 
+        $model = $this->model();
+        $user = $model->newQuery()->create($args);
+
+        return $user;
     }
 
     public function update($id, array $args = array())
     {
+        $this->isValidForUpdate($id, array_get($args, 'email', null));
 
+        $user = $this->findById($id);
+        $user->fill($args);
+        $user->save();
+
+        return $user;
     }
 
     public function delete($id)
@@ -108,6 +122,31 @@ class UserRepository implements UserRepositoryInterface {
         }
 
         return $model;
+    }
+
+    protected function isValidForCreate($email)
+    {
+        if (is_null($email)) throw new EmailCannotBeEmptyException('Email address cannot be empty');
+
+        $model = $this->model();
+
+        if ($model->newQuery()->where('email', $email)->first()) throw new EmailAlreadyExistsException("Email [$email] already exists");
+
+        return true;
+    }
+
+    protected function isValidForUpdate($id, $email)
+    {
+        if (is_null($email)) throw new EmailCannotBeEmptyException('Email address cannot be empty');
+
+        $user = $this->findById($id);
+
+        if ($email != $user->email)
+        {
+            if ($this->model()->newQuery()->where('email', $email)->first()) throw new EmailAlreadyExistsException("Email [$email] already exists");
+        }
+
+        return true;
     }
 
 }

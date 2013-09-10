@@ -24,6 +24,16 @@ class User extends Model implements UserInterface, RemindableInterface {
 
     protected $fillable = array('email', 'nickname', 'password', 'first_name', 'last_name');
 
+    public function isActivated()
+    {
+        return $this->activated ? true : false;
+    }
+
+    public function isSuspended()
+    {
+        return $this->suspended ? true : false;
+    }
+
     /**
      * Get the unique identifier for the user.
      *
@@ -54,14 +64,32 @@ class User extends Model implements UserInterface, RemindableInterface {
         return $this->email;
     }
 
+    /**
+     * [getActivationCode description]
+     * @return [type] [description]
+     */
     public function getActivationCode()
     {
         return $this->activation_code;
     }
 
+    /**
+     * [getPasswordRecoveryCode description]
+     * @return [type] [description]
+     */
     public function getPasswordRecoveryCode()
     {
         return $this->reset_password_code;
+    }
+
+    /**
+     * [generateRandomCode description]
+     * @param  integer $length [description]
+     * @return [type]          [description]
+     */
+    public function generateRandomCode($length = 20)
+    {
+        return Str::random($length);
     }
 
 }

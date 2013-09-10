@@ -11,11 +11,11 @@ return array(
 
         'enabled' => true,
 
+        'throttling_time_interval' => '15',
+
         'max_throttling_limit' => '3',
 
         'throttling_delay_interval' => '10',
-
-        'show_captcha' => true
     )
 
 );
