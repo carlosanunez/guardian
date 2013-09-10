@@ -11,6 +11,21 @@ class GuardTest extends \PHPUnit_Framework_TestCase {
         m::close();
     }
 
+    public function testLogoutMethodUpdateLastLogin()
+    {
+        $user = m::mock('Illuminate\Auth\UserInterface');
+        $mock = $this->getGuard();
+        $mock->setCookieJar($cookies = m::mock('Illuminate\Cookie\CookieJar'));
+
+        $mock->setUser($user);
+        $user->shouldReceive('save')->andReturn($user);
+
+        $cookies->shouldReceive('forget')->once()->with('remember_9db386d26d2bdbb941554c98c6df7eb6');
+        $mock->getSession()->shouldReceive('forget')->once()->with('login_9db386d26d2bdbb941554c98c6df7eb6');
+
+        $mock->logout();
+    }
+
     /**
      * @expectedException Elphie\Guardian\UserNotLoginException
      */
@@ -49,6 +64,22 @@ class GuardTest extends \PHPUnit_Framework_TestCase {
         $user->shouldReceive('getActivationCode')->once()->andReturn($user->activation_code = $activationCode);
 
         $this->assertEquals($user->activation_code, $mock->register($args, true));
+    }
+
+    public function testRegisterMethodFiresRegisterEvent()
+    {
+        $args = array('email' => 'foo@bar.com', 'password' => '123456', 'nickname' => 'foobar', 'first_name' => 'foo', 'last_name' => 'bar');
+        $activationCode = 'IwvMYbniZL67z7gVyhib';
+        $mock = $this->getGuard();
+
+        $mock->getUserRepository()->shouldReceive('create')->once()->andReturn($user = $this->getUserStub());
+        $user->shouldReceive('generateRandomCode')->once()->andReturn($activationCode);
+        $mock->getUserRepository()->shouldReceive('update')->with($user->id, array('activation_code' => $activationCode))->andReturn($user);
+        $user->shouldReceive('getActivationCode')->once()->andReturn($user->activation_code = $activationCode);
+
+        $mock->setDispatcher($events = m::mock('Illuminate\Events\Dispatcher'));
+        $events->shouldReceive('fire')->once()->with('elphie.guardian.register', array($user));
+        $this->assertEquals($user->activation_code, $mock->register($args));
     }
 
     public function testActivateAccountMethod()

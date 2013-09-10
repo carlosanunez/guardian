@@ -1,6 +1,7 @@
 <?php namespace Elphie\Guardian\Tests\Repositories;
 
 use Mockery as m;
+use Elphie\Guardian\Models\User;
 use Elphie\Guardian\Repositories\UserRepository;
 
 class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
@@ -147,7 +148,7 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
         $repo->findByLoginAttribute($email);
     }
 
-    public function findByAttributeMethod()
+    public function testfindByAttributeMethod()
     {
         $attribute = 'nickname';
         $value = 'foobar';
