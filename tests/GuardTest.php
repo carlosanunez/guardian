@@ -25,8 +25,8 @@ class GuardTest extends \PHPUnit_Framework_TestCase {
 
     protected function getGuard()
     {
-        list($session, $provider, $user, $request, $cookie) = $this->getMocks();
-        return new Guard($provider, $session, $user, $request);
+        list($session, $provider, $config, $user, $request, $cookie) = $this->getMocks();
+        return new Guard($provider, $session, $config, $user, $request);
     }
 
     protected function getMocks()
@@ -34,6 +34,7 @@ class GuardTest extends \PHPUnit_Framework_TestCase {
         return array(
             m::mock('Illuminate\Session\Store'),
             m::mock('Illuminate\Auth\UserProviderInterface'),
+            m::mock('Illuminate\Config\Repository'),
             m::mock('Elphie\Guardian\Contracts\UserRepositoryInterface'),
             Request::create('/', 'GET'),
             m::mock('Illuminate\Cookie\CookieJar'),

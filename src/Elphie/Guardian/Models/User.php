@@ -54,4 +54,14 @@ class User extends Model implements UserInterface, RemindableInterface {
         return $this->email;
     }
 
+    public function getActivationCode()
+    {
+        return $this->activation_code;
+    }
+
+    public function getPasswordRecoveryCode()
+    {
+        return $this->reset_password_code;
+    }
+
 }

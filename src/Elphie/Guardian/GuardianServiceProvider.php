@@ -1,7 +1,8 @@
 <?php namespace Elphie\Guardian;
 
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Auth\AuthServiceProvider as ServiceProvider;
+//use Illuminate\Auth\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
 class GuardianServiceProvider extends ServiceProvider {
 
@@ -10,7 +11,7 @@ class GuardianServiceProvider extends ServiceProvider {
 	 *
 	 * @var bool
 	 */
-	protected $defer = false;
+	protected $defer = true;
 
 	/**
 	 * Bootstrap the application events.
@@ -34,7 +35,8 @@ class GuardianServiceProvider extends ServiceProvider {
 	{
 		$this->registerRepositories();
 		$this->registerFacades();
-		$this->registerAuth();
+		$this->registerAuthManager();
+		$this->registerAuthEvents();
 	}
 
 	protected function registerRepositories()
@@ -53,7 +55,13 @@ class GuardianServiceProvider extends ServiceProvider {
 		});
 	}
 
-	protected function registerAuth()
+
+	/**
+	 * Register the service provider.
+	 *
+	 * @return void
+	 */
+	public function registerAuthManager()
 	{
 		$this->app['auth'] = $this->app->share(function($app)
 		{
@@ -64,6 +72,43 @@ class GuardianServiceProvider extends ServiceProvider {
 
 			return new AuthManager($app);
 		});
+	}
+
+	/**
+	 * Register the events needed for authentication.
+	 *
+	 * @return void
+	 */
+	protected function registerAuthEvents()
+	{
+		$app = $this->app;
+
+		$app->after(function($request, $response) use ($app)
+		{
+			// If the authentication service has been used, we'll check for any cookies
+			// that may be queued by the service. These cookies are all queued until
+			// they are attached onto Response objects at the end of the requests.
+			if (isset($app['auth.loaded']))
+			{
+				foreach ($app['auth']->getDrivers() as $driver)
+				{
+					foreach ($driver->getQueuedCookies() as $cookie)
+					{
+						$response->headers->setCookie($cookie);
+					}
+				}
+			}
+		});
+	}
+
+	/**
+	 * Get the services provided by the provider.
+	 *
+	 * @return array
+	 */
+	public function provides()
+	{
+		return array('auth', 'elphie.guardian.user');
 	}
 
 }

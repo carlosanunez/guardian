@@ -11,7 +11,7 @@ class AuthManager extends \Illuminate\Auth\AuthManager {
     {
         $provider = $this->createDatabaseProvider();
 
-        return new Guard($provider, $this->app['session'], $this->app->make('Elphie\Guardian\Contracts\UserRepositoryInterface'));
+        return new Guard($provider, $this->app['session'], $this->app['config'], $this->app->make('Elphie\Guardian\Contracts\UserRepositoryInterface'));
     }
 
     /**
@@ -23,7 +23,7 @@ class AuthManager extends \Illuminate\Auth\AuthManager {
     {
         $provider = $this->createEloquentProvider();
 
-        return new Guard($provider, $this->app['session'], $this->app->make('Elphie\Guardian\Contracts\UserRepositoryInterface'));
+        return new Guard($provider, $this->app['session'], $this->app['config'], $this->app->make('Elphie\Guardian\Contracts\UserRepositoryInterface'));
     }
 
 }
